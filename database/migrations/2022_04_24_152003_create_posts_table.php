@@ -19,6 +19,7 @@ class CreatePostsTable extends Migration
 
             $table->string('title');
             $table->text('description');
+            $table->boolean('is_email_sent')->default(0);
 
             $table->foreignId('website_id')
                 ->constrained('websites')

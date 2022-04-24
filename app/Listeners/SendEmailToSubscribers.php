@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\PostCreated;
+use App\Mail\NewPost;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SendEmailToSubscribers implements ShouldQueue
 {
@@ -26,6 +28,22 @@ class SendEmailToSubscribers implements ShouldQueue
      */
     public function handle(PostCreated $event)
     {
-        //
+        $post = $event->post;
+
+        if ($post->is_email_sent) {
+            return;
+        }
+
+        $website = $post->website;
+
+        $website->subscribers()->chunk(100, function ($users) use ($post) {
+            foreach ($users as $user) {
+                Mail::to($user->email)->send(new NewPost($post));
+            }
+        });
+
+        $post->is_email_sent = true;
+
+        $post->save();
     }
 }

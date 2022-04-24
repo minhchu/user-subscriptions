@@ -14,7 +14,16 @@ class Post extends Model
      *
      * @var string[]
      */
-    protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description', 'website_id'];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_email_sent' => 'boolean',
+    ];
 
     public function website()
     {
