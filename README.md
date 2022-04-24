@@ -43,3 +43,13 @@ Response:
 }
 
 ```
+
+After create a new post, you can check `mailtrap` for test email
+
+# Command
+
+Send email of a post:
+
+```bash
+php artisan mail:new_post 1 # post id
+```
