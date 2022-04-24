@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Models\Post;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -26,15 +25,5 @@ class PostCreated
     public function __construct(Post $post)
     {
         $this->post = $post;
-    }
-
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array
-     */
-    public function middleware()
-    {
-        return [(new WithoutOverlapping($this->post->id))->dontRelease()->expireAfter(180)];
     }
 }

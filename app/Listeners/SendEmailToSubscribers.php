@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\PostCreated;
 use App\Mail\NewPost;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Mail;
 
 class SendEmailToSubscribers implements ShouldQueue
@@ -45,5 +45,15 @@ class SendEmailToSubscribers implements ShouldQueue
         $post->is_email_sent = true;
 
         $post->save();
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [(new WithoutOverlapping($this->post->id))->dontRelease()->expireAfter(180)];
     }
 }
